@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Classification</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="logo"><i class="fab fa-airbnb"></i>eAI-detector</div>
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#about">About Us</a>
+        </div>
+    </div>
+    </div>
+<div class = "main">
+    <div class="main-container">
+        <div class="container">
+            <h2>AI GENERATED TEXT DETECTION SYSTEM</h2>
+            <h5>Ensures the input text is written in English-Language</h5>
+            <form id="textForm" action="/predict" method="post">
+                <textarea id="textInput" name="text" rows="20" cols="30" placeholder="Paste your text here..."></textarea><br>
+                <div id="wordCount" class="word-count">Word Count: 0 / 1000</div>
+                <input type="file" id="fileInput" accept=".txt,.docx" class="file-input"><br>
+                <label for="fileInput" class="file-label">Upload File (.txt or .docx)</label>
+                <input type="submit" value="Classify">
+            </form>
+        </div>
+        <div id="result" class="result">
+            <div class="spinner-5"></div>
+        </div>
+    </div>
+</div>
+<script>
+    const MIN_WORD_COUNT = 50;
+    const MAX_WORD_COUNT = 1000;
+
+    document.getElementById('textForm').onsubmit = async function(event) {
+        event.preventDefault();
+        const wordCount = getWordCount();
+        if (wordCount < MIN_WORD_COUNT) {
+            alert(`Text is too short. Minimum word count is ${MIN_WORD_COUNT}.`);
+            return;
+        }
+        if (wordCount > MAX_WORD_COUNT) {
+            alert(`Text is too long. Maximum word count is ${MAX_WORD_COUNT}.`);
+            return;
+        }
+        
+        const resultContainer = document.getElementById('result');
+        resultContainer.style.display = 'flex';
+        resultContainer.innerHTML = `<div class="spinner-5"></div>`;
+
+        const formData = new FormData(event.target);
+        const response = await fetch('/predict', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+
+        resultContainer.innerHTML = `
+            <h2 class="Res"><i class="fa fa-list-alt" aria-hidden="true"></i> Result</h2>
+            <p><span>Prediction:</span> <span class="pred"> ${result.prediction}</span></p>
+            <br>
+            <p><span>Probability:</span> ${result.confidence}</p>
+            <br>
+            <div>
+            <h3 class="break"><i class="fas fa-dice"></i> Probability Breakdown</h3>
+            <table>
+                <tr>
+                <th>AI</th>
+                <th>Human</th>
+                </tr>
+                <tr>
+                <td class="AI">${result.AI}</td>
+                <td class="Human">${result.HUMAN}</td>
+                </tr>
+            </table>
+            
+            </div>
+        `;
+    };
+
+    document.getElementById('fileInput').onchange = function(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        const textInput = document.getElementById('textInput');
+        const allowedTypes = ["text/plain", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+
+        if (!allowedTypes.includes(file.type)) {
+            alert("Invalid file type. Please upload a .txt or .docx file.");
+            event.target.value = "";  // Clear the file input
+            return;
+        }
+
+        if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+            reader.onload = function() {
+                mammoth.extractRawText({ arrayBuffer: reader.result })
+                    .then(function(result) {
+                        textInput.value = result.value;
+                        updateWordCount();
+                    })
+                    .catch(function(err) {
+                        console.error("Error reading DOCX file:", err);
+                    });
+            };
+            reader.readAsArrayBuffer(file);
+        } else {
+            reader.onload = function() {
+                textInput.value = reader.result;
+                updateWordCount();
+            };
+            reader.readAsText(file);
+        }
+    };
+
+    document.getElementById('textInput').addEventListener('input', updateWordCount);
+
+    function getWordCount() {
+        const text = document.getElementById('textInput').value;
+        return text.trim().split(/\s+/).filter(function(word) {
+            return word.length > 0;
+        }).length;
+    }
+
+    function updateWordCount() {
+        const wordCount = getWordCount();
+        document.getElementById('wordCount').textContent = `Word Count: ${wordCount} / ${MAX_WORD_COUNT}`;
+    }
+
+    function resetForm() {
+        document.getElementById('textInput').value = '';
+        document.getElementById('fileInput').value = '';
+        const resultContainer = document.getElementById('result');
+        resultContainer.style.display = 'none';
+        resultContainer.innerHTML = ''; // Clear the content of the result container
+        updateWordCount();
+    }
+</script>
+
+
+
+</body>
+</html>

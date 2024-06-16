@@ -1,0 +1,118 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
+}
+
+h1 {
+    color: #333333;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+textarea, input[type="file"], input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+}
+
+textarea {
+    resize: none;
+}
+
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.result {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    display: none;
+}
+
+.result h2 {
+    margin: 0 0 10px;
+}
+
+.result p {
+    margin: 5px 0;
+}
+
+.about-section {
+    background-color: #ffffff;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.about-section h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+.about-section p {
+    color: #666;
+    line-height: 1.6;
+}
+.team-section {
+    margin: 20px 0;
+}
+.team-section h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+.team-members {
+    display: flex;
+    gap: 20px;
+}
+.team-member {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    text-align: center;
+}
+.team-member img {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}
+.team-member h3 {
+    margin: 10px 0 5px;
+    color: #333;
+}
+.team-member p {
+    color: #666;
+}
+.main-content {
+    margin-top: 60px; /* Adjust this value if your navbar height changes */
+    padding: 20px;
+}
