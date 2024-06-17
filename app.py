@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify, render_template
+import configparser
 import pickle
 import pandas as pd
 import numpy as np
@@ -228,4 +229,4 @@ def predict():
 
 # Run the app
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host = "0.0.0.0", port=5000,debug=True)
